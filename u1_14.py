@@ -39,19 +39,19 @@ class HomeLibrary:
     def delete_book(self, book: Book):
         self.lib.remove(book)
 
-    def __search_by_name(self, b: Book, request: str):
+    def _search_by_name(self, b: Book, request: str):
         if b.name.find(request) != -1:
             return b
 
-    def __search_by_publisher(self, b: Book, request: str):
+    def _search_by_publisher(self, b: Book, request: str):
         if b.publisher.find(request) != -1:
             return b
 
-    def __search_by_date(self, b: Book, request: str):
+    def _search_by_date(self, b: Book, request: str):
         if b.date.find(request) != -1:
             return b
 
-    def __search_by_authors(self, b: Book, request: str):
+    def _search_by_authors(self, b: Book, request: str):
         for a in b.authors:
             if a.find(request) != -1:
                 return b
@@ -62,32 +62,32 @@ class HomeLibrary:
             for b in self.lib:
                 if op is not None:
                     if op == 'name':
-                        if self.__search_by_name(b, request):
+                        if self._search_by_name(b, request):
                             books.append(b)
                             continue
                     elif op == 'publisher':
-                        if self.__search_by_publisher(b, request):
+                        if self._search_by_publisher(b, request):
                             books.append(b)
                             continue
                     elif op == 'date':
-                        if self.__search_by_date(b, request):
+                        if self._search_by_date(b, request):
                             books.append(b)
                             continue
                     elif op == 'authors':
-                        if self.__search_by_authors(b, request):
+                        if self._search_by_authors(b, request):
                             books.append(b)
                             continue
                 else:
-                    if self.__search_by_name(b, request):
+                    if self._search_by_name(b, request):
                         books.append(b)
                         continue
-                    if self.__search_by_publisher(b, request):
+                    if self._search_by_publisher(b, request):
                         books.append(b)
                         continue
-                    if self.__search_by_date(b, request):
+                    if self._search_by_date(b, request):
                         books.append(b)
                         continue
-                    if self.__search_by_authors(b, request):
+                    if self._search_by_authors(b, request):
                         books.append(b)
                         continue
             return books
@@ -99,8 +99,6 @@ class HomeLibrary:
 
     def get_books(self) -> list:
         return self.lib
-
-    # def delete_book(self, book: Book):
 
 
 def get_menu_choice(lb: HomeLibrary):
@@ -185,6 +183,7 @@ def get_menu_choice(lb: HomeLibrary):
 
 def main() -> None:
     lb = HomeLibrary()
+
     lb.add_book(
         Book(name="История России в датах",
              authors=["Орлов Александр Сергеевич", "Георгиев Владимир Анатольевич"],

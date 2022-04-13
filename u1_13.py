@@ -5,12 +5,11 @@ class MyString:
     def __init__(self, string):
         self.string = string
 
-    def __setattr__(self, attr, string):
-        if attr == 'string':
-            self.__dict__[attr] = string
+    # def __setattr__(self, attr, string):
+    #     if attr == 'string':
+    #         self.__dict__[attr] = string
 
     def __add__(self, string):
-        # return str(self.string) + str(string.string)
         return self.string + str(string)
 
     def __str__(self):
@@ -41,7 +40,7 @@ class MyString:
             nums[i] = float(num)
         return nums
 
-    def to_bool(self):
+    def to_bool(self) -> bool:
         nums = self.to_digit()
         ans = False
         for i, num in enumerate(nums):
@@ -49,7 +48,7 @@ class MyString:
                 if float(num):
                     ans = True
             except ValueError:
-                pass
+                print("Ошибка при преобразовании строки в float")
         return ans
 
 
@@ -61,7 +60,8 @@ def get_menu_choice(strings: list):
         print("3. Извлечь число ")
         print("4. Преобразовать в число нужного типа")
         print("5. Стравнить строки ")
-        print("6. Выход ")
+        print("6. Сложить строки ")
+        print("7. Выход ")
         print(73 * "-")
 
     def print_type_menu():
@@ -75,8 +75,7 @@ def get_menu_choice(strings: list):
 
     print_menu()
     while loop:
-        choice = input("Ввдеите комманду (число 1-5): ")
-
+        choice = input("Ввдеите комманду (число 1-7): ")
         if choice == '1':
             for i, s in enumerate(strings):
                 print(f"{i+1}) {s}")
@@ -109,13 +108,21 @@ def get_menu_choice(strings: list):
                 else:
                     input("Неправильный выбор меню. Нажмите любую клавишу, чтобы повторить попытку..")
             except ValueError:
-                print("Возникла ошибка при преобразовании типа")
+                print("Ошибка при преобразовании типа")
         elif choice == '5':
             for i, s1 in enumerate(strings):
                 for s2 in strings[:i]:
                     print("{} > {} ? : {}".format(s1, s2, s1 > s2))
                     print("{} < {} ? : {}".format(s1, s2, s1 < s2))
         elif choice == '6':
+            try:
+                str1, str2 = input("Ввдеите номера двух строк для сложения: ").split()
+                str1, str2 = [int(str1), int(str2)]
+                print(strings[str1 - 1] + strings[str2 - 1])
+            except ValueError:
+                print("Ошибка при конкатенации строк")
+
+        elif choice == '7':
             print("Выход..")
             loop = False
         else:
@@ -123,7 +130,6 @@ def get_menu_choice(strings: list):
 
 
 def main():
-    # print(f'Hi, {name}')
     strings = []
     strings.append(MyString("16"))
     strings.append(MyString("65rwer"))

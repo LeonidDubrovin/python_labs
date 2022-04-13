@@ -2,16 +2,11 @@ from math import sqrt
 
 JobMode = ['AddObj', 'DelObj', 'WorkWithObj', 'Exit']
 
+# todo  to Factory
 tObjects = []
 
 
 class Factory:
-    def __init__(self):
-        pass
-
-    def __del__(self):
-        pass
-
     @staticmethod
     def add_object():
         print("1. Quadrate")
@@ -22,18 +17,25 @@ class Factory:
 
         new_obj = None
         if item == 0:
-            new_obj = TQuadrate()
+            new_obj = Quadrate()
         elif item == 1:
-            new_obj = TPentagon()
+            new_obj = Pentagon()
         elif item == 2:
-            new_obj = TTriangle()
+            new_obj = Triangle()
         elif item == 3:
-            new_obj = TRectangle()
+            new_obj = Rectangle()
         tObjects.append(new_obj)
 
     @staticmethod
     def del_object():
-        pass
+        if len(tObjects):
+            print("Какой объект удалить?")
+            for i, obj in enumerate(tObjects):
+                print("{})".format(i+1))
+            item = Menu.select_item(len(tObjects))
+            del tObjects[item]
+        else:
+            print("Нет элементов")
 
     @staticmethod
     def work_with_object():
@@ -41,7 +43,7 @@ class Factory:
             print(f"{i}) ")
 
 
-class TFigure:
+class Figure:
     coordinates = []
 
     def get_coord(self):
@@ -50,14 +52,16 @@ class TFigure:
     def move(self):
         pass
 
+    # todo to Factory
     def compare(self):
         pass
 
+    # todo to Factory
     def is_intersect(self, T1, T2):
         pass
 
 
-class TQuadrate(TFigure):
+class Quadrate(Figure):
     num_coord = 4
 
     def __init__(self):
@@ -80,21 +84,21 @@ class TQuadrate(TFigure):
                 print("Ошибка при вводе")
 
 
-class TPentagon(TFigure):
+class Pentagon(Figure):
     num_coord = 5
 
     def __init__(self):
         super().__init__()
 
 
-class TTriangle(TFigure):
+class Triangle(Figure):
     num_coord = 3
 
     def __init__(self):
         super().__init__()
 
 
-class TRectangle(TFigure):
+class Rectangle(Figure):
     num_coord = 4
 
     def __init__(self):
@@ -109,7 +113,7 @@ class Menu:
     def select_item(n_item) -> int:
         while True:
             try:
-                item = (input(f"Ввдеите комманду (число 1-{n_item}): "))
+                item = (input(f"Введите комманду (число 1-{n_item}): "))
                 if 0 < int(item) <= n_item+1:
                     return int(item) - 1
                 else:
