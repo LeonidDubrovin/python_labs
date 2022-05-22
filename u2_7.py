@@ -15,8 +15,11 @@ class SymbString:
         print('Текущее значение: ', self.value)
 
     def operator_inc(self, str):
-        self.value = self.value + str.value
-        print('Конкатенация строк: ', self.value)
+        try:
+            self.value = self.value + str.value
+            print('Конкатенация строк: ', self.value)
+        except ValueError:
+            print("Ошибка при конкатенации строк")
 
     def __del__(self):
         print('Объект был уничтожен.')
@@ -24,13 +27,16 @@ class SymbString:
 
 class DecString(SymbString):
     def operator_inc(self, str):
-        if type(self) == type(str):
-            value1 = int(self.value)
-            value2 = int(str.value)
-            self.value = value1 + value2
-        else:
-            self.value += str.value
-        print('Результат сложения: ', self.value)
+        try:
+            if type(self) == type(str):
+                value1 = int(self.value)
+                value2 = int(str.value)
+                self.value = value1 + value2
+            else:
+                self.value += str.value
+            print('Результат сложения: ', self.value)
+        except ValueError:
+            print("Ошибка при сложении десятичного числа и другого объекта")
 
 class Factory:
     @staticmethod
