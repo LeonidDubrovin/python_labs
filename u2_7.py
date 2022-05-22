@@ -1,99 +1,56 @@
 from math import sqrt
+import re
 
-JobMode = ['AddObj', 'DelObj', 'WorkWithObj', 'Exit']
+# JobMode = ['AddObj', 'DelObj', 'WorkWithObj', 'Exit']
 
 # todo  to Factory
-tObjects = []
+# tObjects = []
 
+
+class SymbString:
+    def __init__(self, value=''):
+        self.value = value
+
+    def show(self):
+        print('Текущее значение: ', self.value)
+
+    def operator_inc(self, str):
+        self.value = self.value + str.value
+        print('Конкатенация строк: ', self.value)
+
+    def __del__(self):
+        print('Объект был уничтожен.')
+
+
+class DecString(SymbString):
+    def operator_inc(self, str):
+        if type(self) == type(str):
+            value1 = int(self.value)
+            value2 = int(str.value)
+            self.value = value1 + value2
+        else:
+            self.value += str.value
+        print('Результат сложения: ', self.value)
 
 class Factory:
     @staticmethod
-    def add_object():
-        print("1. Quadrate")
-        print("2. Pentagon")
-        print("3. Triangle")
-        print("4. Rectangle")
-        item = Menu.select_item(4)
-
-        new_obj = None
-        if item == 0:
-            new_obj = Quadrate()
-        elif item == 1:
-            new_obj = Pentagon()
-        elif item == 2:
-            new_obj = Triangle()
-        elif item == 3:
-            new_obj = Rectangle()
-        tObjects.append(new_obj)
+    def create_symb():
+        value = str(input('Введите содержание строки: '))
+        return SymbString(value)
 
     @staticmethod
-    def del_object():
-        pass
+    def create_dec():
+        while True:
+            dec_number = str(input('Введите десятичное число: '))
+            if re.match(r'[0-9]+', dec_number) is not None:
+                return DecString(dec_number)
+            else:
+                print(f'Неккоректный ввод десятичного числа. Попробуйте заново.\n')
+                continue
 
     @staticmethod
-    def work_with_object():
-        for i, obj in enumerate(tObjects):
-            print(f"{i}) ")
-
-
-class Figure:
-    coordinates = []
-
-    def get_coord(self):
-        return self.coordinates
-
-    def move(self):
-        pass
-
-    def compare(self):
-        pass
-
-    def is_intersect(self, T1, T2):
-        pass
-
-
-class Quadrate(Figure):
-    num_coord = 4
-
-    def __init__(self):
-        print("Введите координаты квадрата")
-        # var1, var2 = input("1) ").split()
-        # self.coordinates.append([(float(var1), float(var2))])
-        # var1, var2 = input("2) ").split()
-        # self.coordinates.append([(float(var1), float(var2))])
-        # var1, var2 = input("3) ").split()
-        # var1, var2 = [float(var1), float(var2)]
-        # if sqrt((self.coordinates[0][0] - var1) ** 2 + (self.coordinates[0][1] - var2) ** 2) <= \
-        #     sqrt((self.coordinates[1][0] - var1) ** 2 + (self.coordinates[1][1] - var2) ** 2):
-        i = 0
-        while i < self.num_coord:
-            try:
-                var1, var2 = input(f"{i}) ").split()
-                self.coordinates.append([(float(var1), float(var2))])
-                i += 1
-            except ValueError:
-                print("Ошибка при вводе")
-
-
-class Pentagon(Figure):
-    num_coord = 5
-
-    def __init__(self):
-        super().__init__()
-
-
-class Triangle(Figure):
-    num_coord = 3
-
-    def __init__(self):
-        super().__init__()
-
-
-class Rectangle(Figure):
-    num_coord = 4
-
-    def __init__(self):
-        super().__init__()
+    def delete(symbstr):
+        del symbstr
 
 
 class Menu:
@@ -106,7 +63,7 @@ class Menu:
             try:
                 item = (input(f"Ввдеите комманду (число 1-{n_item}): "))
                 if 0 < int(item) <= n_item+1:
-                    return int(item) - 1
+                    return int(item)
                 else:
                     print("Неправильное число")
             except ValueError:
@@ -114,28 +71,83 @@ class Menu:
 
     @staticmethod
     def select():
+        menu_text = (
+            '''
+            1. Создать пару объектов
+            2. Показать значение первого объекта
+            3. Показать значение второго объекта
+            4. Прибавить к первому второе значение
+            5. Прибавить к второму первое значение
+            6. Удалить объекты
+            7. Выход'''
+        )
         print(30 * "-", "МЕНЮ", 30 * "-")
-        print("1. Добавить")
-        print("2. Удалить")
-        print("3. Работать")
-        print("4. Выход ")
+        print(menu_text)
         print(73 * "-")
-        item = Menu.select_item(3)
-        return JobMode[item]
+        item = Menu.select_item(7)
+        return item
 
 
 def main() -> None:
     factory = Factory()
+    choice = Menu.select()
+    while True:
+        if choice == 1:
+            print("Создать символьную строку: 1")
+            print("Создать десятичную строку: 2")
+            print("Первый объект:")
+            type_str_input = Menu.select_item(2)
+            if type_str_input == 1:
+                x = factory.create_symb()
+            elif type_str_input == 2:
+                x = factory.create_dec()
+            else:
+                print('\nПеременная не была создана.')
+                continue
 
-    job_mode = Menu.select()
-    while job_mode != 'Exit':
-        if job_mode == 'AddObj':
-            factory.add_object()
-        elif job_mode == 'DelObj':
-            factory.del_object()
-        elif job_mode == 'WorkWithObj':
-            factory.work_with_object()
-        job_mode = Menu.select()
+            print("Второй объект:")
+            type_str_input = Menu.select_item(2)
+            if type_str_input == 1:
+                y = factory.create_symb()
+            elif type_str_input == 2:
+                y = factory.create_dec()
+            else:
+                print('\nПеременная не была создана.')
+                continue
+
+            if x is not None and y is not None:
+                while True:
+                    choice = Menu.select()
+                    if choice == 2:
+                        x.show()
+
+                    elif choice == 3:
+                        y.show()
+
+                    elif choice == 4:
+                        x.operator_inc(y)
+
+                    elif choice == 5:
+                        y.operator_inc(x)
+
+                    elif choice == 6:
+                        x = factory.delete(x)
+                        y = factory.delete(y)
+                        break
+
+                    elif choice == 7:
+                        break
+
+                    else:
+                        print('Неккоректный ввод! Для начала необходимо создать пару объектов (операция 1)')
+                        continue
+
+        elif choice == 7:
+            print("Завершение работы программы")
+            break
+        else:
+            print("Создайте пару объектов")
+            choice = Menu.select()
 
 
 if __name__ == '__main__':
