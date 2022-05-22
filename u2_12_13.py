@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import random
 import math
+import uuid
 
 
 class Factory:
@@ -10,7 +11,7 @@ class Factory:
     def _choose_object(self):
         try:
             for i, obj in enumerate(self.objects):
-                print("{}) {}: ".format(i + 1, type(obj).__name__))
+                print("{}) {}, {}: ".format(i + 1, type(obj).__name__, obj.id))
             item = Menu.select_item(len(self.objects)) - 1
             obj = self.objects[item]
             return obj
@@ -33,6 +34,7 @@ class Factory:
             new_obj = Rectangle()
         elif item == 4:
             new_obj = Pentagon()
+        new_obj.coordinates = []
         new_obj.set_coordinates()
         self.objects.append(new_obj)
 
@@ -52,6 +54,7 @@ class Factory:
             new_obj = Rectangle()
         elif item == 4:
             new_obj = Pentagon()
+
         new_obj.generate_coordinates()
         self.objects.append(new_obj)
         print("Объект сгенерирован, тип: ", type(new_obj).__name__)
@@ -77,11 +80,11 @@ class Factory:
             obj1_area = obj1.get_area()
             obj2_area = obj2.get_area()
             if obj1_area > obj2_area:
-                print("Плохадь первого больше площади второго: {} > {}".format(obj1_area, obj2_area))
+                print("Площадь первого больше площади второго: {} > {}".format(obj1_area, obj2_area))
             elif obj1_area < obj2_area:
-                print("Плохадь первого меньше площади второго: {} < {}".format(obj1_area, obj2_area))
+                print("Площадь первого меньше площади второго: {} < {}".format(obj1_area, obj2_area))
             else:
-                print("Плохади одинаковы: {} = {}".format(obj1_area, obj2_area))
+                print("Площади одинаковы: {} = {}".format(obj1_area, obj2_area))
 
         else:
             print("Меньше двух объектов")
@@ -113,7 +116,9 @@ class Point:
 
 
 class Figure:
-    coordinates = []
+    def __init__(self):
+        self.coordinates = []
+        self.id = uuid.uuid4()
 
     def move(self, mov):
         for c in self.coordinates:
@@ -123,10 +128,9 @@ class Figure:
 
 class Triangle(Figure):
     num_coord = 3
-    _coordinates = []
 
     def __init__(self):
-        pass
+        super().__init__()
 
     @staticmethod
     def is_triangle(coords):
@@ -151,7 +155,7 @@ class Triangle(Figure):
                     print("Ошибка при вводе")
             if self.is_triangle(tmp_arr):
                 print("Треугольник добавлен ")
-                self._coordinates = tmp_arr
+                self.coordinates = tmp_arr
                 break
             else:
                 print("Нельзя построить трекгоьник по данным точкам")
@@ -163,19 +167,22 @@ class Triangle(Figure):
             vect = (p2.x - p1.x, p2.y - p1.y)
             p3 = Point(p1.x - vect[1], p1.y + vect[0])
             if self.is_triangle([p1, p2, p3]):
-                self._coordinates.append(p1)
-                self._coordinates.append(p2)
-                self._coordinates.append(p3)
+                self.coordinates.append(p1)
+                self.coordinates.append(p2)
+                self.coordinates.append(p3)
                 break
 
     def get_area(self):
-        p1, p2, p3 = self._coordinates
-        s = (p1 + p2 + p3) / 2
-        area = (s * (s - p1) * (s - p2) * (s - p3)) ** 0.5
+        p1, p2, p3 = self.coordinates
+        a = math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2)
+        b = math.sqrt((p1.x - p3.x) ** 2 + (p1.y - p3.y) ** 2)
+        c = math.sqrt((p2.x - p3.x) ** 2 + (p2.y - p3.y) ** 2)
+        s = (a + b + c) / 2
+        area = (s * (s - a) * (s - b) * (s - c)) ** 0.5
         return area
 
     def draw(self):
-        p1, p2, p3 = self._coordinates
+        p1, p2, p3 = self.coordinates
         plt.scatter(p1.x, p1.y, s=35)
         plt.scatter(p2.x, p2.y, s=35)
         plt.scatter(p3.x, p3.y, s=35)
@@ -299,6 +306,8 @@ class Rectangle(Figure):
 
 class Pentagon(Figure):
     num_coord = 5
+
+
 
     def generate_coordinates(self):
         pentagon = []

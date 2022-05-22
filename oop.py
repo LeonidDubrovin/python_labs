@@ -1,10 +1,10 @@
 class A:
-    arr = ['A']
+    def __init__(self):
+        self.arr = ['A']
 
 
 class B(A):
-    def __init__(self):
-        pass
+    num = 2
 
     def add(self, p):
         self.arr.append(p)
@@ -13,7 +13,7 @@ class B(A):
 b1 = B()
 b2 = B()
 b1.add('B1')
-b1.add('B2')
+b2.add('B2')
 print(b1.arr)
 print(b2.arr)
 
