@@ -1,42 +1,33 @@
 from math import sqrt
 import re
 
-# JobMode = ['AddObj', 'DelObj', 'WorkWithObj', 'Exit']
-
-# todo  to Factory
-# tObjects = []
+# были удалены принты из классов
 
 
 class SymbString:
     def __init__(self, value=''):
         self.value = value
 
-    def show(self):
-        print('Текущее значение: ', self.value)
+    def __add__(self, other):
+        return SymbString(self.value + other.value)
 
-    def operator_inc(self, str):
-        try:
-            self.value = self.value + str.value
-            print('Конкатенация строк: ', self.value)
-        except ValueError:
-            print("Ошибка при конкатенации строк")
-
-    def __del__(self):
-        print('Объект был уничтожен.')
+    def __str__(self):
+        return self.value
 
 
 class DecString(SymbString):
-    def operator_inc(self, str):
-        try:
-            if type(self) == type(str):
-                value1 = int(self.value)
-                value2 = int(str.value)
-                self.value = value1 + value2
-            else:
-                self.value += str.value
-            print('Результат сложения: ', self.value)
-        except ValueError:
-            print("Ошибка при сложении десятичного числа и другого объекта")
+    def __str__(self):
+        return str(self.value)
+
+    def __add__(self, other):
+        if type(self) == type(other):
+            value1 = int(self.value)
+            value2 = int(other.value)
+            value = value1 + value2
+        else:
+            value = self.value + other.value
+        return DecString(value)
+
 
 class Factory:
     @staticmethod
@@ -55,8 +46,8 @@ class Factory:
                 continue
 
     @staticmethod
-    def delete(symbstr):
-        del symbstr
+    def delete(string):
+        del string
 
 
 class Menu:
@@ -124,21 +115,27 @@ def main() -> None:
             if x is not None and y is not None:
                 while True:
                     choice = Menu.select()
+                    if choice == 1:
+                        print("Объекты уже созданы")
+                        continue
+
                     if choice == 2:
-                        x.show()
+                        print("Первый объект: ", x)
 
                     elif choice == 3:
-                        y.show()
+                        print("Второй объект: ", y)
 
                     elif choice == 4:
-                        x.operator_inc(y)
+                        x += y
+                        print("Первый объект: ", x)
 
                     elif choice == 5:
-                        y.operator_inc(x)
+                        y += x
+                        print("Второй объект: ", y)
 
                     elif choice == 6:
-                        x = factory.delete(x)
-                        y = factory.delete(y)
+                        factory.delete(x)
+                        factory.delete(y)
                         break
 
                     elif choice == 7:

@@ -89,14 +89,14 @@ class Factory:
         else:
             print("Меньше двух объектов")
 
-    def move(self):
+    def select_moved_object(self):
         if len(self.objects):
             print("Какой объект передвинуть?")
             obj = self._choose_object()
             print("Координаты для передвижения")
             x, y = input(f"(x,y): ").split()
             x, y = float(x), float(y)
-            self.objects[self.objects.index(obj)].move((x, y))
+            self.objects[self.objects.index(obj)].move(Point(x, y))
         else:
             print("Нет объектов")
 
@@ -122,8 +122,8 @@ class Figure:
 
     def move(self, mov):
         for c in self.coordinates:
-            c.x += mov[0]
-            c.y += mov[1]
+            c.x += mov.x
+            c.y += mov.y
 
 
 class Triangle(Figure):
@@ -141,6 +141,7 @@ class Triangle(Figure):
         else:
             return False
 
+    # todo set argument list of coordinates
     def set_coordinates(self):
         print("Введите координаты треугольника")
         while True:
@@ -307,8 +308,6 @@ class Rectangle(Figure):
 class Pentagon(Figure):
     num_coord = 5
 
-
-
     def generate_coordinates(self):
         pentagon = []
         R = random.randint(5, 15)
@@ -381,7 +380,7 @@ def main() -> None:
         elif job_mode == 'IsIntersect':
             factory.is_intersect()
         elif job_mode == 'MoveObj':
-            factory.move()
+            factory.select_moved_object()
         elif job_mode == 'Compare':
             factory.compare()
         elif job_mode == 'DrawObj':
