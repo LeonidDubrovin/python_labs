@@ -69,7 +69,7 @@ class Menu:
         print(30 * "-", "МЕНЮ", 30 * "-")
         for key in menu_items:
             print('{0}){1}'.format(key, menu_items[key]))
-        print(73 * "-")
+        print(66 * "-")
         item = Menu.select_item(len(menu_items))
         return item
 
