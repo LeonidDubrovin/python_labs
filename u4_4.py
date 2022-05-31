@@ -23,22 +23,12 @@ class DBase:
     def add_airplane(self, ap: AEROFLOT):
         self.airplanes.append(ap)
 
-    def show(self):
-        if len(self.airplanes) > 0:
-            for ap in self.airplanes:
-                print(ap)
-        else:
-            print("Нет рейсов")
-
-    def show_destination(self, d: str):
-        if len(self.airplanes) > 0:
-            is_exist = False
-            for ap in self.airplanes:
-                if d == ap.destination:
-                    print(ap)
-                    is_exist = True
-            if not is_exist:
-                print("Нет рейсов с таким местом назначения")
+    def show_destination(self, d: str) -> list:
+        tmp_list = []
+        for ap in self.airplanes:
+            if d == ap.destination:
+                tmp_list.append(ap)
+        return tmp_list
 
     def sort_by_flight_number(self):
         self.airplanes.sort(key=attrgetter('flight_number'))
@@ -98,12 +88,23 @@ def main() -> None:
             print("Рейсы сгенерированы")
 
         elif choice == 3:
-            db.show()
+            aps = db.airplanes
+            if len(aps) > 0:
+                for ap in aps:
+                    print(ap)
+            else:
+                print("Нет рейсов")
 
         elif choice == 4:
             d = str(input(f"Ввдеите место назначения: "))
             print("Рейсы в данное место назначения: {}".format(d))
-            db.show_destination(d)
+            aps = db.show_destination(d)
+            if len(aps) > 0:
+                for ap in aps:
+                    if d == ap.destination:
+                        print(ap)
+            else:
+                print("Нет рейсов с таким местом назначения")
 
         elif choice == 5:
             print("Завершение работы программы")
