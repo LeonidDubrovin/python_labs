@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import random
 import math
 import uuid
+import numpy as np
 
 
 class Factory:
@@ -9,8 +10,7 @@ class Factory:
     JobMode = ['AddObj', 'GenObj', 'DelObj', 'IsIntersect', 'CompareArea', 'MoveObj', 'DrawObj', 'Exit']
 
     def choose_object(self):
-        for i, obj in enumerate(self.objects):
-            print("{}) {}, {}: ".format(i + 1, type(obj).__name__, obj.id))
+        show_objects()
         item = Menu.select_item(len(self.objects)) - 1
         obj = self.objects[item]
         return obj
@@ -85,21 +85,6 @@ class Factory:
                 break
             raise ValueError("Нельзя построить пятиугольник по данным точкам")
         return new_obj
-
-    # @staticmethod
-    # def new_object(obj):
-    #     tmp_arr = []
-    #     while True:
-    #         i = 0
-    #         while i < obj.num_coord:
-    #             p = try_input_point(f"{i} (x,y): ")
-    #             tmp_arr.append(p)
-    #             i += 1
-    #         if obj.is_rectangle(tmp_arr):
-    #             obj.set_coordinates(tmp_arr)
-    #             break
-    #         raise ValueError("Нельзя построить фигуру по данным точкам")
-    #     return obj
 
     @staticmethod
     def is_intersect(obj1, obj2):
@@ -298,12 +283,27 @@ class Pentagon(Figure):
         super().__init__()
 
     @staticmethod
-    def is_pentagon(coord):
-        pass
+    def is_pentagon(coords):
+        is_pentagon_object = True
+        for i in range(0, len(coords)):
+            if i == len(coords) - 1:
+                vec1 = [coords[i-1].x - coords[i].x, coords[i-1].y - coords[i].y]
+                vec2 = [coords[0].x - coords[i].x, coords[0].y - coords[i].y]
+            else:
+                vec1 = [coords[i-1].x - coords[i].x, coords[i-1].y - coords[i].y]
+                vec2 = [coords[i+1].x - coords[i].x, coords[i+1].y - coords[i].y]
+            unit_vector_1 = vec1 / np.linalg.norm(vec1)
+            unit_vector_2 = vec2 / np.linalg.norm(vec2)
+            dot_product = np.dot(unit_vector_1, unit_vector_2)
+            angle_rad = np.arccos(dot_product)
+            angle = np.degrees(angle_rad)
+            if not math.isclose(angle, 108):
+                is_pentagon_object = False
+        return is_pentagon_object
 
     def generate_coordinates(self):
         pentagon = []
-        R = random.randint(12, 15)
+        R = random.randint(8, 15)
         start_rad = random.randint(0, 90)
         for n in range(0, 5):
             x = R * math.cos(math.radians(start_rad + n * 72))
@@ -311,7 +311,6 @@ class Pentagon(Figure):
             pentagon.append(Point(x, y))
         self.coordinates = pentagon
 
-    # todo check it
     def get_area(self):
         p1, p2, p3, p4, p5 = self.coordinates
         a = vector_length(p1, p2)
@@ -338,7 +337,7 @@ def vector_length(point1: Point, point2: Point):
     return math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2)
 
 
-def show_objects():
+def draw_objects():
     plt.xlabel("x", fontsize=10)
     plt.ylabel("y", fontsize=10)
     plt.tick_params(axis='both', which='major', labelsize=9)
@@ -364,6 +363,11 @@ def try_input_point(string: str) -> Point:
             return Point(float(x), float(y))
         except ValueError:
             print("Ошибка при вводе")
+
+
+def show_objects():
+    for i, obj in enumerate(Factory.objects):
+        print("{}) {}, {}: ".format(i + 1, type(obj).__name__, obj.id))
 
 
 class Menu:
@@ -465,13 +469,16 @@ def main():
                 obj1 = factory.choose_object()
                 print("Выберите второй объект для определения пересечения")
                 obj2 = factory.choose_object()
-                if factory.is_intersect(obj1, obj2):
-                    print("Объекты пересекаются")
+                if obj1 is not obj2:
+                    if factory.is_intersect(obj1, obj2):
+                        print("Объекты пересекаются")
+                    else:
+                        print("Объекты не пересекаются")
+                    add_obj_to_show(obj1)
+                    add_obj_to_show(obj2)
+                    draw_objects()
                 else:
-                    print("Объекты не пересекаются")
-                add_obj_to_show(obj1)
-                add_obj_to_show(obj2)
-                show_objects()
+                    print("Нельзя сравнивать объект с самим собой")
             elif job_mode == 'MoveObj':
                 if len(factory.objects):
                     print("Какой объект передвинуть?")
