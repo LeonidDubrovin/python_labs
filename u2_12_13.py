@@ -267,7 +267,6 @@ class Rectangle(Figure):
         self.coordinates.append(p3)
         self.coordinates.append(p4)
 
-    # todo check it
     def get_area(self):
         p1, p2, p3, p4 = self.coordinates
 
@@ -317,7 +316,6 @@ class Pentagon(Figure):
         area = (math.sqrt(5 * (5 + 2 * (math.sqrt(5)))) * a * a) / 4
         return area
 
-    # todo check it
     def is_dot_in_figure(self, point):
         result = False
         j = len(self.coordinates) - 1
